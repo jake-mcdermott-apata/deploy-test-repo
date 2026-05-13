@@ -43,22 +43,26 @@ jobs:
           curl -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
             -d '{
-              "text": "🧪 *TEST* apata-web/mpi ready for staging deploy",
-              "blocks": [
+              "attachments": [
                 {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "🧪 *TEST* apata-web/mpi ready for staging deploy\n\n*Commit:* `${{ inputs.commit_sha }}`\n*Triggered by:* ${{ github.actor }}"
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
+                  "color": "#41b6e1",
+                  "blocks": [
                     {
-                      "type": "button",
-                      "text": {"type": "plain_text", "text": "View PR"},
-                      "url": "${{ steps.deploy-pr.outputs.pr_url }}"
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "🧪 *TEST* apata-web/mpi ready for staging deploy\n\n*Commit:* `${{ inputs.commit_sha }}`\n*Triggered by:* ${{ github.actor }}"
+                      }
+                    },
+                    {
+                      "type": "actions",
+                      "elements": [
+                        {
+                          "type": "button",
+                          "text": {"type": "plain_text", "text": "View PR"},
+                          "url": "${{ steps.deploy-pr.outputs.pr_url }}"
+                        }
+                      ]
                     }
                   ]
                 }
