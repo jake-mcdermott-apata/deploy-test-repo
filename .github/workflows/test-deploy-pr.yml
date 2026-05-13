@@ -15,7 +15,7 @@ jobs:
       - name: Open staging deploy PR
         id: deploy-pr
         env:
-          GH_TOKEN: ${{ secrets.PLATFORM_CICD_PAT }}
+          GH_TOKEN: ${{ secrets.PLATFORM_CICD_TOKEN }}
         run: |
           git clone https://x-access-token:${GH_TOKEN}@github.com/apata-org/terraform-base.git
           cd terraform-base
@@ -38,7 +38,7 @@ jobs:
 
       - name: Notify Slack
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
           curl -X POST "$SLACK_WEBHOOK_URL" \
             -H "Content-Type: application/json" \
