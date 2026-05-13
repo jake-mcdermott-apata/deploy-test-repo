@@ -1,0 +1,66 @@
+name: Test Deploy PR Flow
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: 'Fake commit SHA to use'
+        required: false
+        default: 'test123'
+
+jobs:
+  test-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Open staging deploy PR
+        id: deploy-pr
+        env:
+          GH_TOKEN: ${{ secrets.PLATFORM_CICD_PAT }}
+        run: |
+          git clone https://x-access-token:${GH_TOKEN}@github.com/apata-org/terraform-base.git
+          cd terraform-base
+          git checkout -b deploy/test-repo-${{ inputs.commit_sha }}-${{ github.run_id }}
+          echo 'image_tag = "${{ inputs.commit_sha }}"' > staging-eu/services/apata-web/terraform.tfvars
+          git config user.name "Platform-CICD"
+          git config user.email "platform-cicd@apata.io"
+          git add .
+          git commit -m "Deploy apata-web/mpi to staging: ${{ inputs.commit_sha }}"
+          git push origin deploy/test-repo-${{ inputs.commit_sha }}-${{ github.run_id }}
+          PR_URL=$(gh pr create \
+            --title "[Staging Deploy] apata-web/mpi ${{ inputs.commit_sha }}" \
+            --body "Automated deployment of apata-web/mpi to staging.
+
+          **Commit:** ${{ inputs.commit_sha }}
+          **Triggered by:** ${{ github.actor }}
+          **Source:** Test run from deploy-test-repo" \
+            --label "staging-deploy")
+          echo "pr_url=$PR_URL" >> $GITHUB_OUTPUT
+
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEPLOY_WEBHOOK }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "text": "🧪 *TEST* apata-web/mpi ready for staging deploy",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🧪 *TEST* apata-web/mpi ready for staging deploy\n\n*Commit:* `${{ inputs.commit_sha }}`\n*Triggered by:* ${{ github.actor }}"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {"type": "plain_text", "text": "View PR"},
+                      "url": "${{ steps.deploy-pr.outputs.pr_url }}"
+                    }
+                  ]
+                }
+              ]
+            }'
