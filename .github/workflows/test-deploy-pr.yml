@@ -61,6 +61,11 @@ jobs:
                           "type": "button",
                           "text": {"type": "plain_text", "text": "View PR"},
                           "url": "${{ steps.deploy-pr.outputs.pr_url }}"
+                        },
+                        {
+                          "type": "button",
+                          "text": {"type": "plain_text", "text": "View Commit"},
+                          "url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
                         }
                       ]
                     }
