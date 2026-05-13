@@ -51,7 +51,7 @@ jobs:
                       "type": "section",
                       "text": {
                         "type": "mrkdwn",
-                        "text": "🧪 *TEST* apata-web/mpi ready for staging deploy\n\n*Commit:* `${{ inputs.commit_sha }}`\n*Triggered by:* ${{ github.actor }}"
+                        "text": ":rocket: *TEST* apata-web/mpi ready for staging deploy\n\n*Commit:* `${{ inputs.commit_sha }}`\n*Triggered by:* ${{ github.actor }}"
                       }
                     },
                     {
