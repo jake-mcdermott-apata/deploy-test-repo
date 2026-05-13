@@ -59,12 +59,13 @@ jobs:
                       "elements": [
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "text": "View PR"},
-                          "url": "${{ steps.deploy-pr.outputs.pr_url }}"
+                          "text": {"type": "plain_text", "text": "View Terraform PR"},
+                          "url": "${{ steps.deploy-pr.outputs.pr_url }}",
+                          "style": "primary"
                         },
                         {
                           "type": "button",
-                          "text": {"type": "plain_text", "text": "View Commit"},
+                          "text": {"type": "plain_text", "text": "View Source Commit"},
                           "url": "https://github.com/${{ github.repository }}/commit/${{ github.sha }}"
                         }
                       ]
